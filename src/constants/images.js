@@ -1,0 +1,31 @@
+// Photos live in assets/images/food (downloaded from Unsplash, 400x400 crops) and are bundled with the app,
+// so nothing here depends on an outside server.
+export const FOOD_IMAGES = {
+  milk: require("../../assets/images/food/milk.jpg"),
+  eggs: require("../../assets/images/food/eggs.jpg"),
+  bread: require("../../assets/images/food/bread.jpg"),
+  cheese: require("../../assets/images/food/cheese.jpg"),
+  vegetables: require("../../assets/images/food/vegetables.jpg"),
+  meat: require("../../assets/images/food/meat.jpg"),
+  fries: require("../../assets/images/food/fries.jpg"),
+  drinks: require("../../assets/images/food/drinks.jpg"),
+  pantry: require("../../assets/images/food/pantry.jpg"),
+  candy: require("../../assets/images/food/candy.jpg"),
+  deli: require("../../assets/images/food/deli.jpg"),
+  groundBeef: require("../../assets/images/food/groundBeef.jpg"),
+  yogurt: require("../../assets/images/food/yogurt.jpg"),
+  butter: require("../../assets/images/food/butter.jpg"),
+  potatoes: require("../../assets/images/food/potatoes.jpg"),
+  bananas: require("../../assets/images/food/bananas.jpg"),
+  apples: require("../../assets/images/food/apples.jpg"),
+  porkChops: require("../../assets/images/food/porkChops.jpg"),
+  cucumber: require("../../assets/images/food/cucumber.jpg"),
+  tomatoes: require("../../assets/images/food/tomatoes.jpg"),
+  spinach: require("../../assets/images/food/spinach.jpg"),
+  dumplings: require("../../assets/images/food/dumplings.jpg"),
+  lasagna: require("../../assets/images/food/lasagna.jpg"),
+  taquitos: require("../../assets/images/food/taquitos.jpg"),
+  onionRings: require("../../assets/images/food/onionRings.jpg"),
+};
+
+export const HERO_IMAGE = require("../../assets/images/hero/hero.jpg");

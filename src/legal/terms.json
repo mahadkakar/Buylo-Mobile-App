@@ -1,0 +1,94 @@
+{
+  "title": "Terms of Service",
+  "intro": "These terms govern your use of the {{appName}} app. Please read them. Last updated {{updated}}.",
+  "sections": [
+    {
+      "heading": "1. Agreement",
+      "paragraphs": [
+        "By creating an account or using {{appName}} you agree to these terms and to our Privacy Policy. If you do not agree, do not use the app."
+      ]
+    },
+    {
+      "heading": "2. What the app does",
+      "paragraphs": [
+        "{{appName}} lets you build a basket of grocery items and compare estimated prices at nearby stores. It is an information service only. You do not buy anything through the app, and we are not a retailer."
+      ]
+    },
+    {
+      "heading": "3. Prices and accuracy",
+      "paragraphs": [
+        "Prices, product details, images, and store information come from the websites of the retailers shown in the app (for example metro.ca, foodbasics.ca, and walmart.ca) and are collected periodically. They may be out of date, incomplete, or different from what you see in a store or on a retailer's website, and items may be out of stock. Treat all results as estimates and confirm the price with the retailer before you rely on it. We do not guarantee that any store is the cheapest or that any total is exact."
+      ]
+    },
+    {
+      "heading": "4. No affiliation with retailers",
+      "paragraphs": [
+        "{{appName}} is independent. It is not affiliated with, endorsed by, or sponsored by any grocery retailer. Retailer and product names are used only to identify them, and belong to their respective owners. The prices, product details, and images shown in the app are the retailers' information from their own websites; they are not products or content created by {{appName}}."
+      ]
+    },
+    {
+      "heading": "5. Eligibility and your account",
+      "paragraphs": [
+        "You must be at least {{minimumAge}} years old to use the app. You are responsible for the information you provide, for keeping your password secure, and for activity on your account. Tell us promptly at {{supportEmail}} if you think your account has been accessed without permission."
+      ]
+    },
+    {
+      "heading": "6. Acceptable use",
+      "paragraphs": ["You agree not to:"],
+      "bullets": [
+        "use the app or our servers for anything unlawful;",
+        "access our servers or data by automated means, such as bots or scrapers, or copy or resell the app's content or data;",
+        "reverse engineer the app, or interfere with or overload the service or its security;",
+        "use someone else's account, or impersonate anyone."
+      ]
+    },
+    {
+      "heading": "7. Our content and your content",
+      "paragraphs": [
+        "The app, its design, and its software belong to us or our licensors and are protected by law. We give you a limited, personal, non transferable licence to use the app. Baskets and other content you create stay yours; you give us permission to process them only as needed to run the app for you."
+      ]
+    },
+    {
+      "heading": "8. Third party services",
+      "paragraphs": [
+        "The app relies on third party services, such as sign in and hosting providers. We are not responsible for services we do not control."
+      ]
+    },
+    {
+      "heading": "9. Changes, suspension and ending your account",
+      "paragraphs": [
+        "We may change or stop features, and may suspend or end access if you break these terms or to protect the service. You can stop using the app and delete your account at any time in the app under Profile, then Account & Privacy, then Delete Account."
+      ]
+    },
+    {
+      "heading": "10. Disclaimer",
+      "paragraphs": [
+        "The app is provided \"as is\" and \"as available\". To the fullest extent permitted by law, we do not make promises that the app will be uninterrupted, error free, or that its information is accurate or complete."
+      ]
+    },
+    {
+      "heading": "11. Limitation of liability",
+      "paragraphs": [
+        "To the fullest extent permitted by law, we are not liable for indirect, incidental, or consequential losses, or for any loss from relying on prices or store information shown in the app. Nothing in these terms limits any right or liability that cannot be limited under applicable consumer protection or other law."
+      ]
+    },
+    {
+      "heading": "12. Governing law",
+      "paragraphs": [
+        "These terms are governed by the laws of the Province of {{governingLaw}} and the federal laws of Canada that apply there. The courts of {{governingLaw}} have jurisdiction over any dispute, unless the law gives you the right to bring it elsewhere."
+      ]
+    },
+    {
+      "heading": "13. Changes to these terms",
+      "paragraphs": [
+        "We may update these terms. The date at the top shows when they last changed. If you keep using the app after a change, you accept the updated terms."
+      ]
+    },
+    {
+      "heading": "14. Contact",
+      "paragraphs": [
+        "Questions about these terms: {{supportEmail}}."
+      ]
+    }
+  ]
+}
