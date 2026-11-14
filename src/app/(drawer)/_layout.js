@@ -20,6 +20,7 @@ export default function DrawerLayout() {
         <Drawer.Screen name="saved-baskets" />
         <Drawer.Screen name="basket" />
         <Drawer.Screen name="profile" />
+        <Drawer.Screen name="search" />
       </Drawer>
     </GestureHandlerRootView>
   );

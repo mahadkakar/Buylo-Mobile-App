@@ -8,7 +8,7 @@ import { colors } from "../theme/colors";
 
 const TABS = [
   { key: "home", label: "Home", icon: Home, href: "/(drawer)" },
-  { key: "search", label: "Search", icon: Search, href: "/search" },
+  { key: "search", label: "Search", icon: Search, href: "/(drawer)/search" },
   { key: "profile", label: "Profile", icon: User, href: "/(drawer)/profile" },
 ];
 
