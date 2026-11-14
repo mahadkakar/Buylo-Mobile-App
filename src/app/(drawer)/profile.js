@@ -11,6 +11,7 @@ import {
   CalendarDays,
   MapPin,
   Ruler,
+  HelpCircle,
   Bell,
   Lock,
   ShieldCheck,
@@ -315,6 +316,7 @@ function Profile() {
         </SectionCard>
 
         <SectionCard title="Account & Privacy">
+          <LinkRow icon={HelpCircle} label="How Buylo works" onPress={() => router.push("/onboarding")} />
           <LinkRow icon={Lock} label="Change Password" onPress={() => router.push("/settings/change-password")} />
           <LinkRow icon={ShieldCheck} label="Privacy Policy" onPress={() => router.push("/settings/privacy-policy")} />
           <LinkRow icon={FileText} label="Terms of Service" onPress={() => router.push("/settings/terms")} />

@@ -122,6 +122,7 @@ export default function RootLayout() {
               <Stack.Screen name="retailer-basket/[retailerId]" />
               <Stack.Screen name="product/[productId]" />
               <Stack.Screen name="settings" />
+              <Stack.Screen name="onboarding" options={{ animation: "fade", gestureEnabled: false }} />
             </Stack.Protected>
 
             <Stack.Protected guard={!session}>
