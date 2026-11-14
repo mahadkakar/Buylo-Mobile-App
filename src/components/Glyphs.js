@@ -1,10 +1,5 @@
 import { View } from "react-native";
 
-// Small icons drawn from plain views. An SVG icon (lucide) is an Svg, a G and one or more Paths per icon, and a React Profiler
-// recording showed those as a large share of the time spent building a screen of product cards (one per add button). These
-// two look the same at card size and cost a couple of native views each.
-
-// A plus sign: two crossing bars.
 export function PlusGlyph({ size = 16, color = "#fff", thickness = 2 }) {
   const bar = { position: "absolute", backgroundColor: color, borderRadius: thickness };
   return (
@@ -15,7 +10,6 @@ export function PlusGlyph({ size = 16, color = "#fff", thickness = 2 }) {
   );
 }
 
-// A minus sign: one bar.
 export function MinusGlyph({ size = 16, color = "#fff", thickness = 2 }) {
   return (
     <View style={{ width: size, height: size, justifyContent: "center" }}>
@@ -24,7 +18,6 @@ export function MinusGlyph({ size = 16, color = "#fff", thickness = 2 }) {
   );
 }
 
-// A check mark: the corner of a rotated square.
 export function CheckGlyph({ size = 16, color = "#fff", thickness = 2 }) {
   const w = size * 0.34;
   const h = size * 0.62;

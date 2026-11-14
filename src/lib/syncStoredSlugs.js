@@ -3,15 +3,11 @@ import { useBasketStore } from "../store/basketStore";
 import { useSavedBasketsStore } from "../store/savedBasketsStore";
 import { collectSlugs } from "./slugMoves";
 
-const BATCH = 300; // the server accepts up to 300 slugs per request
+const BATCH = 300;
 
 const hydrated = (store) =>
   store.persist.hasHydrated() ? Promise.resolve() : new Promise((resolve) => store.persist.onFinishHydration(() => resolve()));
 
-// At start-up (once per sign-in): ask the server which of the product slugs stored on this phone were merged into another
-// product, and bring the stored baskets up to date. Products that no longer exist anywhere are left alone: the basket keeps
-// the line and the comparison shows it as unavailable, rather than silently deleting something the shopper added.
-// Purely a tidy-up: the server resolves old slugs on its own, so a failure here is ignored.
 export async function syncStoredSlugs() {
   await Promise.all([hydrated(useBasketStore), hydrated(useSavedBasketsStore)]);
   const slugs = collectSlugs(useBasketStore.getState().items);

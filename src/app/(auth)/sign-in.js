@@ -27,8 +27,6 @@ export default function SignIn() {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setLoading(false);
     if (error) setError(error.message);
-    // On success, the root layout's onAuthStateChange listener updates
-    // useAuthStore and Stack.Protected switches to the (tabs) group.
   };
 
   return (
@@ -43,7 +41,6 @@ export default function SignIn() {
     </Pressable>
     <ScrollView
       className="flex-1"
-      // The system bars are measured, not guessed: on Android the form used to run under the back and home buttons.
       contentContainerStyle={{
         flexGrow: 1,
         justifyContent: "center",

@@ -1,9 +1,3 @@
-// Haptic feedback that can never break the app. It is a nicety, so every failure path is a silent no-op:
-//  * the native module is loaded lazily inside try/catch - an app build made before expo-haptics was added has no
-//    ExpoHaptics and would otherwise crash on import;
-//  * devices without a vibration motor / haptic engine (many tablets and older phones, simulators) ignore the call
-//    natively, and any rejection is swallowed here;
-//  * it is skipped entirely when the user turned animations off ("reduce motion").
 import { AccessibilityInfo } from "react-native";
 
 let Haptics = null;
@@ -28,7 +22,6 @@ function run(action) {
   try {
     Promise.resolve(action(Haptics)).catch(() => {});
   } catch {
-    // unsupported device or missing native module: no feedback, no error
   }
 }
 

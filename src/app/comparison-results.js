@@ -32,11 +32,6 @@ export default function ComparisonResults() {
   const setResults = useComparisonStore((state) => state.setResults);
   const setError = useComparisonStore((state) => state.setError);
 
-  // Fires once per "running" job — the basket screen sets status to
-  // "running" right before navigating here. A ref (not state) guards
-  // against double-firing on a re-render while the request is in flight.
-  // `location` (manual-location.js) is optional — the backend falls back
-  // to each retailer's best-covered store when it's not set.
   const requestedRef = useRef(false);
   useEffect(() => {
     if (status !== "running" || requestedRef.current) return;
@@ -50,7 +45,6 @@ export default function ComparisonResults() {
   }, [status]);
 
   const { data: rawSuggestionData, isPlaceholderData } = useSuggestions(items, location, status === "ready" && suggestBrands);
-  // Right after a swap the hook still holds the previous basket's suggestions while the new ones load: do not show them.
   const suggestionData = isPlaceholderData ? undefined : rawSuggestionData;
 
   if (status === "idle") {
@@ -90,28 +84,17 @@ export default function ComparisonResults() {
     );
   }
 
-  // The server ranks stores by how much of the basket they carry, then by
-  // price, so results[0] is the best match. It is only "cheapest" if it
-  // carries the whole basket — a store pricing fewer items has a lower total
-  // for the wrong reason. Savings are only claimed between stores that all
-  // carry everything, so the numbers are comparable.
   const best = results[0];
-  // "Complete" = carries every item AND priced exactly the packages you picked;
-  // totals are only truly comparable between such stores.
   const isExact = (r) => r.unavailableCount === 0 && !r.substitutionCount;
   const outOfCoverage = results.length > 0 && results.every((r) => isOutOfCoverage(r.distanceKm));
-  // Summary on top: the store with the most of your items (best) against the others, and the store with the lowest total
-  // (which may carry fewer items). Totals are only compared between stores that carry the same number of items.
   const priced = results.filter((r) => r.availableCount > 0);
   const cheapest = priced.reduce((min, r) => (r.total < min.total ? r : min), priced[0]);
   const comparable = priced.filter((r) => r.availableCount === best.availableCount);
   const priciest = comparable.reduce((max, r) => (r.total > max.total ? r : max), best);
   const headlineSaving = comparable.length > 1 ? priciest.total - best.total : 0;
   const fewerItems = cheapest && cheapest.id !== best.id ? best.availableCount - cheapest.availableCount : 0;
-  // What the accepted brand swaps already save, shown on top: at the best store if it has swaps, else where they save most.
   const swapStore = (best.swapSavings ?? 0) > 0 ? best : [...results].sort((a, b) => (b.swapSavings ?? 0) - (a.swapSavings ?? 0))[0];
   const swapSaved = swapStore?.swapSavings ?? 0;
-  // Cheaper brands: the best saving among the stores, and how many different swaps are on offer.
   const suggestionStores = suggestionData?.retailers ?? [];
   const replacementCounts = Object.fromEntries(suggestionStores.map((r) => [r.id, (r.replacements ?? []).length]));
   const waysToSave = {

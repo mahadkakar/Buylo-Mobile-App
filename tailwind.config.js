@@ -1,4 +1,3 @@
-/** Modern Value theme — indigo accent, green reserved only for savings/"cheapest" signals. */
 module.exports = {
   content: ["./src/**/*.{js,jsx}"],
   presets: [require("nativewind/preset")],

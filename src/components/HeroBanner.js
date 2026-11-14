@@ -3,7 +3,6 @@ import { View, Text, Pressable, ImageBackground } from "react-native";
 import { HERO_IMAGE } from "../constants/images";
 import { Reveal } from "./motion";
 
-// Photo banner at the top of the dashboard, above the aisles (bundled photo, see constants/images.js).
 export function HeroBanner({ title, subtitle, cta, onPress }) {
   return (
     <Reveal style={{ marginTop: 20 }}>

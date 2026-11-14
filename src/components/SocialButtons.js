@@ -7,8 +7,6 @@ import { AppleLogo, GoogleLogo } from "./BrandIcons";
 import { colors } from "../theme/colors";
 import { signInWithApple, signInWithGoogle } from "../lib/socialAuth";
 
-// "or continue with" plus the Apple and Google buttons for the providers the project has switched on. Shared by the
-// sign in and sign up screens; `onError` receives a message to show (or null to clear it).
 export function SocialButtons({ onError }) {
   const providers = useAuthProviders();
   const [busy, setBusy] = useState(null);
@@ -54,7 +52,6 @@ export function SocialButtons({ onError }) {
         )}
         {providers.apple &&
           (Platform.OS === "ios" ? (
-            // Apple's own button, as its design rules require on iPhone.
             <AppleAuthentication.AppleAuthenticationButton
               buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
               buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}

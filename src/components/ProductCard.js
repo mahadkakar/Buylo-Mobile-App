@@ -8,15 +8,8 @@ import { ProductImage } from "./ProductImage";
 import { tapLight } from "../lib/haptics";
 import { PopOnChange, PressableScale, Reveal } from "./motion";
 
-// `width` is required (not flex:1) so every card in a grid is identically
-// sized — with flex:1, a trailing row with only one item stretches to fill
-// the whole row width instead of matching the others above it.
 const TINTS = ["#F8DADA", "#D6EDDC", "#D9E1FA", "#FBE5C2"];
 
-// `width` is required (not flex:1) so every card in a grid is identically sized. Cards in the same row are
-// stretched to the tallest one and their price row is pinned to the bottom, so prices line up across the row.
-// `onAdd(product)` and `onPress(product)` receive the product, so a screen can pass one stable handler to every card;
-// with that, `memo` makes a basket change re-render only the card whose `inBasket` flipped (it was all of them).
 function ProductCardView({ product, inBasket, onAdd, onRemove, onPress, width, index = 0 }) {
   const price = typeof product.price === "number" ? `$${product.price.toFixed(2)}` : null;
   return (

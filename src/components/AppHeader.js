@@ -13,11 +13,6 @@ export function AppHeader() {
   const router = useRouter();
   const itemCount = useBasketStore((state) => state.items.length);
 
-  // openDrawer() only exists when this screen is part of the (drawer)
-  // navigator — search.js (and any other screen registered as a top-level
-  // Stack.Screen rather than nested under (drawer)) doesn't have it, which
-  // crashed ("undefined is not a function") when AppHeader got reused
-  // there. Fall back to a plain back arrow on those screens instead.
   const canOpenDrawer = typeof navigation.openDrawer === "function";
 
   return (
@@ -30,7 +25,6 @@ export function AppHeader() {
         {canOpenDrawer ? <Menu color={colors.ink} size={24} /> : <ArrowLeft color={colors.ink} size={24} />}
       </Pressable>
 
-      {/* Centred on the screen itself (not between the unequal button groups), under the buttons so they stay tappable. */}
       <View
         pointerEvents="none"
         style={{ position: "absolute", left: 0, right: 0, top: 16, bottom: 20, alignItems: "center", justifyContent: "center" }}

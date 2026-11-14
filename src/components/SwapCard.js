@@ -12,8 +12,6 @@ function money(value) {
   return `$${value.toFixed(2)}`;
 }
 
-// One suggestion: the cheaper alternative (photo, brand, size, price, saving), what it replaces and Keep / Swap
-// buttons. The swap applies to this store only.
 export function SwapCard({ suggestion, index, store, onSwap, onKeep, onOpen }) {
   const { alternative: alt, current } = suggestion;
   return (

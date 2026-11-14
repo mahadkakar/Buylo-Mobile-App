@@ -5,11 +5,8 @@ import { cardShadow, photoBlendStyle, photoTileStyle } from "../theme/shadows";
 import { ProductImage } from "./ProductImage";
 import { PressableScale } from "./motion";
 
-// Soft tints behind the photo, cycled per row so a list does not look flat.
 const TINTS = ["#F8DADA", "#D6EDDC", "#D9E1FA", "#FBE5C2"];
 
-// One product row used by the basket and the dashboard's recent items: tinted photo tile, name, brand and size in
-// the accent colour, price, and whatever control goes on the right (`children`).
 export function ItemRow({ index = 0, image, category, name, brand, size, price, note, onPress, children }) {
   const detail = [brand, size].filter(Boolean).join(" · ");
   return (

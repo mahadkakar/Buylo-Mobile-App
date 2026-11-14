@@ -22,7 +22,6 @@ import { usePreferencesStore } from "../../store/preferencesStore";
 import { useSavedBasketsStore } from "../../store/savedBasketsStore";
 import { ignoreParentRenders } from "../../lib/ignoreParentRenders";
 
-// What the basket says about the per store changes on a line: cheaper brands and replacements, each with the stores.
 function swapNote(item) {
   const swaps = Object.values(item.storeSwaps ?? {});
   const names = (list) => list.map((swap) => swap.storeName).join(", ");
@@ -173,5 +172,4 @@ function Basket() {
   );
 }
 
-// See lib/ignoreParentRenders.js: this screen takes no props and updates through its own hooks.
 export default ignoreParentRenders(Basket);

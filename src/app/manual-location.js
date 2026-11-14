@@ -20,8 +20,6 @@ import { usePreferencesStore } from "../store/preferencesStore";
 import { searchFsa, nearestFsaLabel } from "../lib/postalCode";
 import { roundCoord } from "../lib/location";
 
-// A GPS position further than this from every postal area we list is outside
-// the GTA, so labelling it "Near <GTA neighbourhood>" would be misleading.
 const FSA_LABEL_MAX_KM = 40;
 const LOCATION_TIMEOUT_MS = 15000;
 
@@ -86,9 +84,6 @@ export default function ManualLocation() {
         Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced }),
         LOCATION_TIMEOUT_MS
       );
-      // One-time snapshot, rounded to ~1 km: store-level matching doesn't need
-      // more, and it keeps an exact position off the device's saved data and
-      // out of server logs.
       const latitude = roundCoord(position.coords.latitude);
       const longitude = roundCoord(position.coords.longitude);
       const nearest = nearestFsaLabel(latitude, longitude);
@@ -113,11 +108,6 @@ export default function ManualLocation() {
   };
 
   return (
-    // Without this, the keyboard just overlays the screen on iOS (no
-    // automatic resize) and covers the bottom half of the results list —
-    // confirmed live. "padding" pushes the whole screen up by the keyboard's
-    // height instead; Android's default resize behavior needs a smaller
-    // nudge (keyboardVerticalOffset) since the window already resizes some.
     <KeyboardAvoidingView
       className="flex-1 bg-base"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -164,9 +154,6 @@ export default function ManualLocation() {
           <Text className="font-sans-bold text-sm text-accent">Use my current location</Text>
         </Pressable>
 
-        {/* flex-1 is required, not cosmetic — without it the list doesn't
-            claim the remaining space and has nothing to shrink when the
-            KeyboardAvoidingView above resizes the screen. */}
         <FlatList
           className="flex-1"
           data={results}

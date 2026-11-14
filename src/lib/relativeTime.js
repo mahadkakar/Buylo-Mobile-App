@@ -1,6 +1,3 @@
-// Shared by the saved baskets list (last updated) and the
-// dashboard (store price freshness) — same "X min/h/d ago" formatting,
-// just fed a different timestamp.
 export function relativeTime(timestamp) {
   const diffMs = Date.now() - timestamp;
   if (diffMs < 0) return "arriving soon";

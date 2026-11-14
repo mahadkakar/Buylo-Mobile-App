@@ -1,5 +1,3 @@
-// Photos live in assets/images/food (downloaded from Unsplash, 400x400 crops) and are bundled with the app,
-// so nothing here depends on an outside server.
 export const FOOD_IMAGES = {
   milk: require("../../assets/images/food/milk.jpg"),
   eggs: require("../../assets/images/food/eggs.jpg"),

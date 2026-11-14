@@ -35,7 +35,6 @@ export default function SignUp() {
       return;
     }
     setLoading(true);
-    // The name is optional. It is kept as `full_name`, the same field the Profile screen edits.
     const name = fullName.trim();
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
@@ -47,8 +46,6 @@ export default function SignUp() {
       setError(error.message);
       return;
     }
-    // If email confirmation is on, there's no session yet — show a check-your-email state.
-    // If it's off, the root layout's onAuthStateChange listener takes over automatically.
     if (data.session === null) setCheckEmail(true);
   };
 
@@ -78,7 +75,6 @@ export default function SignUp() {
     </Pressable>
     <ScrollView
       className="flex-1"
-      // The system bars are measured, not guessed: on Android the form used to run under the back and home buttons.
       contentContainerStyle={{
         flexGrow: 1,
         justifyContent: "center",

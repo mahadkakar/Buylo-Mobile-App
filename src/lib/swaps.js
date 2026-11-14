@@ -9,8 +9,6 @@ import { showToast } from "../store/uiStore";
 import { tapSuccess } from "./haptics";
 import { chosenSize, lineId } from "./itemSize";
 
-// What gets saved on the basket line for "at <store>, use this product": the alternative's own package size, so
-// the comparison that follows prices exactly what the suggestion promised.
 export function storeSwapFor(suggestion, store) {
   const alt = suggestion.alternative;
   return {
@@ -22,14 +20,12 @@ export function storeSwapFor(suggestion, store) {
     category: alt.category,
     price: alt.price,
     storeName: store.name,
-    replacement: suggestion.match !== undefined, // a stand in for an item the store does not carry, not a cheaper brand
+    replacement: suggestion.match !== undefined,
   };
 }
 
 let rerunTimer;
 
-// Runs the comparison again for the basket as it is now, shortly after the last change (several quick swaps cost
-// one request). The results screen shows its loading state while this runs.
 export function scheduleComparison(queryClient) {
   clearTimeout(rerunTimer);
   rerunTimer = setTimeout(() => {
@@ -45,16 +41,12 @@ export function scheduleComparison(queryClient) {
   }, 250);
 }
 
-// Screens that show a comparison (the results and a store's basket) call this: when the basket or the location has changed
-// since the prices were worked out (a size added from a product page, a quantity changed, an item removed), the comparison runs
-// again by itself and the screen keeps showing the old prices until the new ones arrive. Before, the screens only changed
-// after "Compare prices" was tapped again. Changes made on these screens (swaps) schedule their own run, which this joins.
 export function useKeepComparisonFresh() {
   const queryClient = useQueryClient();
   const items = useBasketStore((state) => state.items);
   const location = usePreferencesStore((state) => state.location);
   const status = useComparisonStore((state) => state.status);
-  const itemsKey = useComparisonStore((state) => state.itemsKey); // changes when a run is started: re-checks staleness
+  const itemsKey = useComparisonStore((state) => state.itemsKey);
   const isStaleFor = useComparisonStore((state) => state.isStaleFor);
   useEffect(() => {
     if (status === "ready" && items.length > 0 && isStaleFor(items, location)) scheduleComparison(queryClient);
@@ -63,7 +55,6 @@ export function useKeepComparisonFresh() {
 
 const money = (n) => Math.round(n * 100) / 100;
 
-// A store's totals worked out again from its lines.
 function recount(store) {
   const available = store.lines.filter((line) => line.available);
   const swapped = available.filter((line) => line.swappedFrom);
@@ -77,9 +68,6 @@ function recount(store) {
   };
 }
 
-// Shows a change on the store's basket screen straight away. Before, the screen kept the old prices until the comparison
-// had been run again (a half second wait plus the request), which looked like the swap or the undo had not worked. The
-// server's answer replaces this a moment later; `change` maps a line key to a function that returns the new line.
 function showAtOnce(storeId, change) {
   useComparisonStore.getState().patchStore(storeId, (store) =>
     recount({ ...store, lines: store.lines.map((line) => (change[line.slug] ? change[line.slug](line) : line)) })
@@ -97,7 +85,7 @@ function swappedLine(suggestion, quantity) {
       category: alt.category, quantityValue: qty, price: alt.price, lineTotal, available: true, substituted: false,
       requestedSize: null,
     };
-    if (!line.available) return shown; // a replacement for an item the store does not carry: no "was" price
+    if (!line.available) return shown;
     const from = line.swappedFrom ?? {
       name: line.name, brand: line.brand, sizeLabel: line.sizeLabel, price: line.price, lineTotal: line.lineTotal,
     };
@@ -111,7 +99,6 @@ function showSwaps(suggestions, storeId) {
   showAtOnce(storeId, Object.fromEntries(suggestions.map((s) => [s.slug, swappedLine(s, quantity[s.slug])])));
 }
 
-// Puts the lines back as the shopper had them: a swapped line returns to its original, a replacement goes back to "not found".
 function showUndo(slugs, storeId) {
   const { items } = useBasketStore.getState();
   const change = {};
@@ -154,7 +141,6 @@ export function undoSwaps(slugs, storeId, queryClient) {
   showToast(slugs.length === 1 ? "Swap undone, back to your original" : `${slugs.length} swaps undone`);
 }
 
-// Swap at one store, confirm with a toast that offers Undo, and refresh the comparison.
 export function swapWithUndo(suggestions, store, queryClient) {
   const saved = suggestions.reduce((sum, s) => sum + s.saving, 0);
   const slugs = suggestions.map((s) => s.slug);
@@ -168,8 +154,6 @@ export function swapWithUndo(suggestions, store, queryClient) {
   );
 }
 
-// Adds the replacements a store offers for items it does not carry (same mechanism as a brand swap: "at <store>, use
-// <this product>"), with an Undo toast, then re-runs the comparison.
 export function addReplacements(replacements, store, queryClient) {
   const { setStoreSwap, clearStoreSwap } = useBasketStore.getState();
   showSwaps(replacements, store.id);

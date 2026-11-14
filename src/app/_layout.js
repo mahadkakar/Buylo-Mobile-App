@@ -27,10 +27,8 @@ import { resetUserData } from "../store/resetUserData";
 import { useSavedBasketsStore } from "../store/savedBasketsStore";
 import { syncStoredSlugs } from "../lib/syncStoredSlugs";
 
-// The account whose stored product slugs were last checked against the server in this app session.
 let slugSyncedFor = null;
 
-// expo-router renders this instead of a blank screen when any screen crashes while drawing.
 export function ErrorBoundary({ retry }) {
   return <ErrorScreen retry={retry} />;
 }
@@ -40,7 +38,7 @@ SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // prices only change per ingestion run, not per request
+      staleTime: 1000 * 60 * 5,
       retry: 1,
     },
   },
@@ -65,7 +63,6 @@ export default function RootLayout() {
   useEffect(() => {
     const claimSavedBaskets = (session) => {
       useSavedBasketsStore.getState().claimFor(session?.user?.id);
-      // Once per sign-in: tidy up stored product slugs the server has since merged (a failure is harmless).
       const userId = session?.user?.id;
       if (userId && slugSyncedFor !== userId) {
         slugSyncedFor = userId;
@@ -77,11 +74,9 @@ export default function RootLayout() {
       setSession(data.session);
     });
     const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
-      // Explicit sign-out only (not the null session before the stored one is
-      // restored on launch): drop the previous user's on-device data.
       if (event === "SIGNED_OUT") {
         resetUserData();
-        queryClient.clear(); // the next account must not start from the last one's cached lists
+        queryClient.clear();
       }
       claimSavedBaskets(session);
       setSession(session);
@@ -113,8 +108,6 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerShown: false,
-              // One explicit, short slide on both platforms (Android's default varies by version), over the app's own background
-              // so no white or black flashes between screens.
               animation: "slide_from_right",
               animationDuration: 220,
               contentStyle: { backgroundColor: colors.base },
@@ -122,8 +115,6 @@ export default function RootLayout() {
           >
             <Stack.Protected guard={!!session}>
               <Stack.Screen name="(drawer)" />
-              {/* Search is a peer of Home and Profile in the bottom bar, and peers should not slide in (Expo's animation guidance:
-                  a slide implies depth that is not there). The drawer screens already switch without a slide. */}
               <Stack.Screen name="search" options={{ animation: "fade", animationDuration: 150 }} />
               <Stack.Screen name="manual-location" />
               <Stack.Screen name="comparison-results" />

@@ -12,7 +12,6 @@ import { CATEGORIES } from "../constants/categories";
 import { APP_NAME } from "../lib/brand";
 import { Logo } from "./Logo";
 
-// The links are built once, not on every render: a new object each time would make every row look "changed" to React.memo.
 const HOME_HREF = "/(drawer)";
 const SAVED_HREF = "/(drawer)/saved-baskets";
 const SETTINGS_HREF = "/(drawer)/profile";
@@ -21,14 +20,9 @@ const CATEGORY_LINKS = CATEGORIES.map((category) => ({
   href: { pathname: "/(drawer)/categories", params: { category: category.slug } },
 }));
 
-// The drawer is mounted all the time, closed or not, and its content re-rendered on every navigation anywhere in the app:
-// a React Profiler recording showed the sidebar as 38% of all render time (about 16 icons and rows redrawn each time, 55
-// times in 90 commits). Now the rows are memoised: only the one whose "active" state changes draws again.
 function SidebarView({ navigation, state }) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  // Which drawer screen is showing, from the drawer's own state (not usePathname / useGlobalSearchParams, which re-render
-  // their component on every navigation anywhere, including screens stacked above the drawer).
   const focused = state?.routes?.[state.index];
   const activeCategory = focused?.name === "categories" ? focused.params?.category : undefined;
   const navigationRef = useRef(navigation);
@@ -48,8 +42,6 @@ function SidebarView({ navigation, state }) {
     });
   }, []);
 
-  // The drawer starts closing first (that animation runs on the UI thread) and the navigation follows on the next frame.
-  // Before, the screen was pushed first, and mounting a heavy screen such as Categories held up the closing animation.
   const go = useCallback(
     (href) => {
       navigationRef.current?.closeDrawer?.();
@@ -113,7 +105,6 @@ function SidebarView({ navigation, state }) {
   );
 }
 
-// Draws again only when its own props change (see the note above Sidebar): every prop is a plain value or a stable function.
 const SidebarItem = memo(function SidebarItem({ icon: Icon, label, active, danger, href, onGo, onPress }) {
   return (
     <Pressable
@@ -129,9 +120,6 @@ const SidebarItem = memo(function SidebarItem({ icon: Icon, label, active, dange
   );
 });
 
-// The drawer hands its content brand new props on every navigation (and on every drawer state change), so without this the
-// sidebar drew again on 176 of 311 commits in a React Profiler recording (15% of all render time). It only needs to draw when
-// the active drawer screen, or the category chosen on the Categories screen, changes. `navigation` is read through a ref.
 const focusedKey = (props) => {
   const route = props.state?.routes?.[props.state.index];
   return route ? `${route.name}:${route.params?.category ?? ""}` : "";

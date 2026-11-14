@@ -13,15 +13,6 @@ import Animated, {
 
 import { colors } from "../theme/colors";
 
-// Shared motion helpers. Every one of them honours the phone's "reduce motion" setting (useReducedMotion), so
-// nothing moves for people who turned animations off.
-
-// A Pressable that dips slightly while held, so taps feel acknowledged before the navigation or state change lands.
-// The scale lives on an outer Animated.View; the inner plain Pressable carries `className`/`style`, because NativeWind
-// styles plain components (an animated Pressable silently dropped its className).
-// `lite` is for items repeated many times on one screen (the product grid cards, two of these each): on Android they are a
-// plain Pressable that dims while held, without the animated wrapper and shared value, because a React Profiler recording
-// showed building those for a screenful of cards as one of the biggest costs of opening a screen. iPhone keeps the dip.
 export function PressableScale({ children, style, className, scaleTo = 0.97, disabled, hitSlop, fill, lite, ...rest }) {
   if (lite && Platform.OS === "android") {
     return (
@@ -60,12 +51,8 @@ export function PressableScale({ children, style, className, scaleTo = 0.97, dis
   );
 }
 
-// Fades and slides a list row in. Only the first screenful is staggered (`index` past `limit` appears at once), so a
-// long scrolled list never waits on animation.
 export function Reveal({ index = 0, limit = 6, step = 45, children, style }) {
   const reduced = useReducedMotion();
-  // Past the first screenful there is no entrance at all: dozens of simultaneous entering animations were a measurable
-  // part of the scroll jank in the product grids.
   if (reduced || index >= limit) return <View style={style}>{children}</View>;
   return (
     <Animated.View entering={FadeInDown.delay(Math.min(index, limit) * step).duration(260)} style={style}>
@@ -74,8 +61,6 @@ export function Reveal({ index = 0, limit = 6, step = 45, children, style }) {
   );
 }
 
-// Content that springs in when it first appears and each time `trigger` changes (the basket count badge).
-// `skipFirst` leaves out the pop on first appearance (for long lists: only real changes should animate).
 export function PopOnChange({ trigger, children, style, skipFirst = false }) {
   const reduced = useReducedMotion();
   const scale = useSharedValue(1);
@@ -90,7 +75,6 @@ export function PopOnChange({ trigger, children, style, skipFirst = false }) {
   return <Animated.View style={[style, animated]}>{children}</Animated.View>;
 }
 
-// A grey placeholder block that gently pulses while data loads (shows the layout instead of a lone spinner).
 export function Skeleton({ style }) {
   const reduced = useReducedMotion();
   const opacity = useSharedValue(reduced ? 0.7 : 0.45);
@@ -102,8 +86,6 @@ export function Skeleton({ style }) {
   return <Animated.View style={[{ backgroundColor: colors.border, borderRadius: 10 }, style, animated]} />;
 }
 
-// One pulse for a whole group of placeholder blocks. The grid used to give every block (20 for four cards) its own shared value
-// and endless animation, which a React Profiler recording showed as about 4.5% of all render time.
 function PulseGroup({ children, style }) {
   const reduced = useReducedMotion();
   const opacity = useSharedValue(reduced ? 0.8 : 0.55);
@@ -115,12 +97,10 @@ function PulseGroup({ children, style }) {
   return <Animated.View style={[style, animated]}>{children}</Animated.View>;
 }
 
-// A plain grey block (no animation of its own): its group pulses.
 function Block({ style }) {
   return <View style={[{ backgroundColor: colors.border, borderRadius: 10 }, style]} />;
 }
 
-// Two columns of product-card shaped skeletons.
 export function ProductGridSkeleton({ cardWidth, gap = 14, rows = 3 }) {
   return (
     <PulseGroup style={{ gap: 18 }}>
@@ -151,8 +131,6 @@ export function ProductGridSkeleton({ cardWidth, gap = 14, rows = 3 }) {
   );
 }
 
-// A dollar amount that counts up from $0 to `value` (ease-out, ~0.8 s) when it first appears. Skips straight to
-// the final number when "reduce motion" is on, and always ends on the exact value.
 export function CountUpMoney({ value, duration = 800, style, className }) {
   const reduced = useReducedMotion();
   const [shown, setShown] = useState(reduced ? value : 0);
@@ -165,8 +143,6 @@ export function CountUpMoney({ value, duration = 800, style, className }) {
     }
     let frame;
     const start = Date.now();
-    // The first time the number counts up from zero; after that it moves from what is shown to the new value, quickly:
-    // counting up from zero again made a swap or an undo look like the price took most of a second to arrive.
     const from = shownRef.current;
     const length = from === 0 ? duration : Math.min(duration, 350);
     const tick = () => {

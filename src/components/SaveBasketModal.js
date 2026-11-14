@@ -5,9 +5,6 @@ import { Bookmark } from "lucide-react-native";
 
 import { colors } from "../theme/colors";
 
-// Shared by basket.js (save current basket) and saved-baskets.js (rename). React Native has no cross-platform
-// Alert.prompt, so this is the one text-input dialog for naming a basket. It looks like components/AppDialog.js (the
-// confirm and notice dialog): same card, icon tile and buttons.
 export function SaveBasketModal({ visible, initialName = "", title, confirmLabel, onClose, onConfirm }) {
   const [name, setName] = useState(initialName);
 

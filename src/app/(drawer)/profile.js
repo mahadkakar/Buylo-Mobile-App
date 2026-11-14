@@ -33,7 +33,6 @@ import { usePreferencesStore } from "../../store/preferencesStore";
 import { APP_NAME } from "../../lib/brand";
 import { ignoreParentRenders } from "../../lib/ignoreParentRenders";
 
-
 function memberSince(createdAt) {
   if (!createdAt) return null;
   return new Date(createdAt).toLocaleDateString("en-CA", { month: "short", year: "numeric" });
@@ -81,7 +80,6 @@ function EditableField({ label, value, placeholder, keyboardType, onSave, isLast
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value ?? "");
   const [saving, setSaving] = useState(false);
-  // The account takes a moment to report the new value, so the saved text is shown straight away.
   const [justSaved, setJustSaved] = useState(null);
   useEffect(() => setJustSaved(null), [value]);
 
@@ -187,7 +185,6 @@ function Profile() {
 
   const fullName = session?.user?.user_metadata?.full_name;
   const savedPhone = session?.user?.user_metadata?.phone;
-  // A value saved before phone validation existed ("abc12") reads as not set, so it can be replaced.
   const phone = PHONE_PATTERN.test((savedPhone || "").trim()) ? savedPhone : undefined;
   const email = session?.user?.email ?? "";
   const initial = (fullName || email)?.[0]?.toUpperCase() ?? "?";
@@ -332,10 +329,6 @@ function Profile() {
           <Text className="font-sans-bold text-base text-white">Save Changes</Text>
         </Pressable>
 
-        {/* Required attributions: GeoNames postal code data (CC BY 4.0) used by
-            the location picker — see src/data/fsaLookup.json — and
-            OpenStreetMap (ODbL) for the Walmart store locations discovered by
-            the backend's discover_walmart_stores command. Don't remove either. */}
         <Text className="font-sans-medium text-[10.5px] text-muted text-center mt-4 opacity-70">
           Postal code data © GeoNames.org, CC BY 4.0
         </Text>
@@ -349,5 +342,4 @@ function Profile() {
   );
 }
 
-// See lib/ignoreParentRenders.js: this screen takes no props and updates through its own hooks.
 export default ignoreParentRenders(Profile);

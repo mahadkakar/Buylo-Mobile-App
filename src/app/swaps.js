@@ -15,11 +15,6 @@ import { usePreferencesStore } from "../store/preferencesStore";
 import { swapWithUndo } from "../lib/swaps";
 import { rowLeaveAnimation } from "../theme/shadows";
 
-// Review swaps: cheaper brands of the same product, one tab per store. A swap applies to that store only: the basket
-// keeps the original product and each store is priced with its own accepted swaps.
-//
-// The screen keeps its own state so a swap never moves you around: the open store stays open, the swapped card leaves
-// at once with a short animation, and the refreshed suggestions arrive quietly behind it.
 export default function Swaps() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -30,10 +25,10 @@ export default function Swaps() {
   const { data, isLoading, isError, isFetching } = useSuggestions(items, location);
   const keepOriginal = useBasketStore((state) => state.keepOriginal);
   const showKeptAgain = useBasketStore((state) => state.showKeptAgain);
-  const hiddenCount = data?.hiddenCount ?? 0; // suggestions the shopper turned down with "Keep mine"
+  const hiddenCount = data?.hiddenCount ?? 0;
 
   const [selected, setSelected] = useState(null);
-  const [swapped, setSwapped] = useState({}); // "store:slug" swapped during this visit: no more suggestions there
+  const [swapped, setSwapped] = useState({});
 
   const stores = useMemo(
     () =>
@@ -44,7 +39,6 @@ export default function Swaps() {
     [data, swapped]
   );
 
-  // Open on the store that was cheapest in the comparison (else the one with the biggest saving), then stay put.
   const cheapestId = results?.[0]?.id;
   const fallbackId = [...stores].sort((a, b) => b.suggestions.length - a.suggestions.length)[0]?.id;
   const defaultId = stores.find((s) => s.id === cheapestId && s.suggestions.length)?.id ?? fallbackId;

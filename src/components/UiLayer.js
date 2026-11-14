@@ -7,7 +7,6 @@ import { colors } from "../theme/colors";
 import { useUiStore } from "../store/uiStore";
 import { AppDialog } from "./AppDialog";
 
-// Toast above the bottom bar and a dimmed spinner overlay for blocking actions. Mounted once in the root layout.
 export function UiLayer() {
   const insets = useSafeAreaInsets();
   const toast = useUiStore((state) => state.toast);

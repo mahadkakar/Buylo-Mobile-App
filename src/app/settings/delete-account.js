@@ -9,12 +9,6 @@ import { APP_NAME } from "../../lib/brand";
 import { confirmDialog, showNotice } from "../../store/uiStore";
 import { useSavedBasketsStore } from "../../store/savedBasketsStore";
 
-// Deleting a Supabase auth user requires the service_role key, which never
-// ships in the mobile app — the real deletion happens server-side
-// (accounts/views.py's DeleteAccountView: verifies this request's own JWT,
-// then calls Supabase's admin API with service_role). This call just
-// authenticates normally like any other apiFetch call; the backend is what
-// actually has admin rights, not this request.
 async function deleteAccountOnServer() {
   await apiFetch("/api/account/", { method: "DELETE" });
 }
@@ -37,7 +31,6 @@ export default function DeleteAccount() {
     setLoading(true);
     try {
       await deleteAccountOnServer();
-      // Deleting the account also removes the saved baskets kept on this phone (a plain log out keeps them).
       useSavedBasketsStore.getState().wipe();
       await supabase.auth.signOut();
     } catch (e) {

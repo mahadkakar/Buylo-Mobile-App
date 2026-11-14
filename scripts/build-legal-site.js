@@ -1,6 +1,3 @@
-// Generates the public Privacy Policy / Terms pages (for GitHub Pages) from the
-// same JSON the in-app screens render, so the two can't drift apart.
-// Usage: node scripts/build-legal-site.js [outDir]   (default: docs/)
 const fs = require("fs");
 const path = require("path");
 

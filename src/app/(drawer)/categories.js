@@ -24,10 +24,6 @@ const STORE_SLUGS = { "Food Basics": "food-basics", Walmart: "walmart", Metro: "
 const SCREEN_PADDING = 20;
 const GRID_GAP = 14;
 
-// Renders its option list in a Modal (a separate native layer) rather than
-// an absolutely-positioned View — zIndex doesn't reliably stack a dropdown
-// above a FlatList's rows in React Native, since the list header and its
-// items aren't real stacking siblings the way plain Views are.
 function Dropdown({ label, options, value, onChange, isOpen, onOpen, onClose }) {
   const triggerRef = useRef(null);
   const [layout, setLayout] = useState(null);
@@ -103,8 +99,8 @@ function Categories() {
   const [selected, setSelected] = useState(paramCategory || CATEGORIES[0].slug);
   const [sort, setSort] = useState(SORTS[0]);
   const [store, setStore] = useState(STORE_FILTERS[0]);
-  const [openMenu, setOpenMenu] = useState(null); // "sort" | "store" | null
-  const gridReady = useDeferredReady(paramCategory || selected); // the grid fills in once the transition has finished
+  const [openMenu, setOpenMenu] = useState(null);
+  const gridReady = useDeferredReady(paramCategory || selected);
 
   useEffect(() => {
     if (paramCategory) setSelected(paramCategory);
@@ -112,9 +108,7 @@ function Categories() {
 
   const items = useBasketStore((state) => state.items);
   const addItem = useBasketStore((state) => state.addItem);
-  // A card stands for one size of a product, so "in the basket" means that size (the same product in another size is another line).
   const inBasketIds = useMemo(() => new Set(items.map((i) => lineId(i))), [items]);
-  // One stable handler for every card (they receive the product), so memoized cards are not re-rendered by each change.
   const handleAdd = useCallback((item) => addItem({ canonicalProductId: item.id, name: item.name, brand: item.brand, displaySize: item.sizeLabel, image: item.image, category: item.category, price: item.price, retailer: item.retailer, quantityValue: 1, quantityUnit: "unit" }), [addItem]);
   const removeItem = useBasketStore((state) => state.removeItem);
   const handleRemove = useCallback((item) => removeItem(cardLineId(item)), [removeItem]);
@@ -142,8 +136,6 @@ function Categories() {
     [data]
   );
 
-  // Sorting and the store filter are the API's job (see products.js), so each page arrives final and the count is
-  // the real total for the chosen store.
   const products = categoryProducts;
   const displayedCount = data?.pages?.[0]?.count ?? products.length;
 
@@ -152,12 +144,6 @@ function Categories() {
       <AppHeader />
 
       <FlatList
-        // Forces a fresh FlatList (and scroll position) per category —
-        // without this, switching categories kept the previous scroll
-        // offset and rendered the new category's data starting from
-        // wherever you'd scrolled to in the old one, confirmed live
-        // whenever the new category's data was already cached (so the
-        // list had something to render immediately at that offset).
         key={selected}
         data={gridReady ? products : []}
         keyExtractor={(item) => item.id}
@@ -261,5 +247,4 @@ function Categories() {
   );
 }
 
-// See lib/ignoreParentRenders.js: this screen takes no props and updates through its own hooks.
 export default ignoreParentRenders(Categories);

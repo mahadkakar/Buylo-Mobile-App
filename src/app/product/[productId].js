@@ -12,22 +12,12 @@ import { RETAILER_META } from "../../constants/retailers";
 import { useBasketStore } from "../../store/basketStore";
 import { lineId } from "../../lib/itemSize";
 
-// Negative when `a` is the better value than `b`. A comparable per-unit price
-// (unitPrice) always beats one without, only falling back to raw price when
-// neither has one — same rule the backend uses for "cheapest" (see
-// catalog/serializers.py's _better), so a tiny pack can't win on sticker
-// price alone.
 function compareValue(a, b) {
   if (a.unitPrice != null && b.unitPrice != null) return a.unitPrice - b.unitPrice;
   if ((a.unitPrice != null) !== (b.unitPrice != null)) return a.unitPrice != null ? -1 : 1;
   return Number(a.price) - Number(b.price);
 }
 
-// One group per package size ("400 g", "21 g", ...), so a canonical product
-// like cheddar cheese reads as its different sizes rather than one long mixed
-// list. Labels are matched ignoring whitespace/case because scraped sizes mix
-// regular and non-breaking spaces ("510 g" vs "510 g"). Groups are ordered
-// best value first; listings inside a group, cheapest first.
 function groupBySize(listings) {
   const byKey = new Map();
   for (const listing of listings) {
@@ -76,31 +66,19 @@ export default function ProductDetail() {
     );
   }
 
-  // The basket holds this product once per size (see lib/itemSize.js): a 2 L bottle and a 12 pack are two lines.
   const lines = items.filter((i) => i.canonicalProductId === product.id);
   const sizeLine = (sizeLabel) => lineId({ canonicalProductId: product.id, sizeLabel });
-  // Order as given by the API (grouped by retailer, cheapest-first within
-  // each) — NOT re-sorted by raw price here. A straight price sort would
-  // let a tiny pack size "win" just for having a low sticker price (e.g. a
-  // 21g snack string at $8.52/100g beating a 400g block at $1.00/100g) —
-  // exactly the bug this was. "Cheapest" below is picked the same
-  // value-aware way the backend already does: a comparable per-unit price
-  // (unitPrice) always wins over one without, only falling back to raw
-  // price when neither listing has one.
   const listings = product.storeListings ?? [];
   const cheapest = listings.reduce((best, listing) => (!best || compareValue(listing, best) < 0 ? listing : best), null);
   const sizeGroups = groupBySize(listings);
   const storeCount = new Set(listings.map((l) => l.retailer)).size;
 
-  // Default to what's already in the basket for this product (the first line's listing, else the listing of its size),
-  // otherwise the cheapest — but once the user taps a row, that choice wins regardless of basket state.
   const firstLine = lines[0];
   const firstLineListing = firstLine
     ? firstLine.listingId ?? listings.find((l) => sizeLine(l.sizeLabel) === lineId(firstLine))?.id
     : null;
   const effectiveSelectedId = selectedId ?? firstLineListing ?? cheapest?.id ?? null;
   const selectedListing = listings.find((l) => l.id === effectiveSelectedId) ?? cheapest;
-  // The basket line for the SIZE that is selected: another size of the product is another line.
   const existingItem = selectedListing ? lines.find((i) => lineId(i) === sizeLine(selectedListing.sizeLabel)) : undefined;
   const inBasket = !!existingItem;
   const selectionChanged = inBasket && existingItem.listingId !== effectiveSelectedId;
@@ -142,8 +120,6 @@ export default function ProductDetail() {
       </View>
 
       <ScrollView contentContainerStyle={{ padding: 20, paddingTop: 4, gap: 16, paddingBottom: 32 }}>
-        {/* The whole photo is shown ("contain") in a white frame: product photos are tall bottles and wide boxes, and
-            "cover" in a wide box cut the top and bottom off. */}
         <View className="relative bg-white" style={{ height: 270, borderRadius: 20, overflow: "hidden" }}>
           <ProductImage
             uri={product.image}

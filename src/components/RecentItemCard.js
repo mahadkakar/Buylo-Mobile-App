@@ -6,8 +6,6 @@ import { Stepper } from "./Stepper";
 import { PressableScale, Reveal } from "./motion";
 import { tapLight } from "../lib/haptics";
 
-// "From your recent baskets" row: the same look as a basket row. A filled plus adds the item, and once it is in the
-// basket the plus turns into the quantity stepper.
 export function RecentItemCard({ item, quantity, onPress, onAdd, onIncrement, onDecrement, index = 0 }) {
   return (
     <Reveal index={index}>

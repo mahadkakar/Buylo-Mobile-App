@@ -1,6 +1,3 @@
-// Modern Value theme. Mirrors tailwind.config.js — kept in sync manually,
-// used anywhere a raw JS color value is needed instead of a className
-// (icon `color` props, StatusBar style, chart libraries, etc.)
 export const colors = {
   base: "#F7F7FB",
   ink: "#1A1B26",

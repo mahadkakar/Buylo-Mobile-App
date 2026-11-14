@@ -1,6 +1,5 @@
 import { Image } from "react-native";
 
-// The Buylo mark (transparent background). Its height is `size`; the width follows the artwork's proportions.
 const ratio = 771 / 927;
 
 export function Logo({ size = 32, style }) {

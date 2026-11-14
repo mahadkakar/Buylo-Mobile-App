@@ -1,9 +1,5 @@
 import Svg, { Path } from "react-native-svg";
 
-// The Apple and Google logos for the sign in buttons, as vector paths so they stay sharp at any size. Apple's own
-// button on iPhone draws its logo itself; these are for the Android Apple button and the Google button.
-// Before a store release check the logos against Apple's and Google's current branding guidelines.
-
 export function AppleLogo({ size = 20, color = "#fff" }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">

@@ -29,7 +29,6 @@ export default function RetailerBasketDetail() {
   const results = useComparisonStore((state) => state.results);
   const comparisonStatus = useComparisonStore((state) => state.status);
   const refreshing = useComparisonStore((state) => state.refreshing);
-  // Items whose replacement was just added: the Add button shows a spinner until the new prices arrive.
   const [pending, setPending] = useState({});
   useEffect(() => {
     setPending({});
@@ -41,7 +40,6 @@ export default function RetailerBasketDetail() {
 
   const store = results?.find((r) => r.id === retailerId);
 
-  // A swap or an added replacement re-runs the comparison; the results are empty until it finishes.
   if (!store && comparisonStatus === "running") {
     return (
       <View className="flex-1 bg-base items-center justify-center px-8" style={{ paddingTop: insets.top }}>
@@ -69,8 +67,6 @@ export default function RetailerBasketDetail() {
   const replacementBySlug = Object.fromEntries((storeSuggestions?.replacements ?? []).map((r) => [r.slug, r]));
   const missingWithReplacement = store.lines.filter((line) => !line.available && replacementBySlug[line.slug]);
   const storeInfo = { id: store.id, name: store.name };
-  // The suggestions are fetched separately and arrive a moment after the prices, so an offer for a line that already shows
-  // its alternative is left out.
   const lineBySlug = Object.fromEntries(store.lines.map((line) => [line.slug, line]));
   const pendingSwaps = (storeSuggestions?.suggestions ?? []).filter(
     (s) => lineBySlug[s.slug]?.productSlug !== s.alternative.slug
@@ -246,7 +242,6 @@ export default function RetailerBasketDetail() {
   );
 }
 
-// A cheaper brand of an item this store does carry: the alternative with its photo, price and what swapping saves.
 function SwapOffer({ suggestion, onSwap, swapping }) {
   const alt = suggestion.alternative;
   return (
@@ -280,7 +275,6 @@ function SwapOffer({ suggestion, onSwap, swapping }) {
   );
 }
 
-// What this store offers in place of an item it does not carry: the closest product with its photo and price.
 function ReplacementOffer({ replacement, onAdd, adding }) {
   const alt = replacement.alternative;
   return (

@@ -5,7 +5,6 @@ import { colors } from "../theme/colors";
 import { PressableScale } from "./motion";
 import { tapSelection } from "../lib/haptics";
 
-// Quantity pill: minus (a bin at quantity 1, since it removes the item), the number, and a filled plus.
 export function Stepper({ quantity, onIncrement, onDecrement }) {
   return (
     <View className="flex-row items-center rounded-full bg-base px-1 py-1" style={{ gap: 2 }}>

@@ -35,7 +35,7 @@ function SavedBaskets() {
   const rename = useSavedBasketsStore((state) => state.rename);
   const remove = useSavedBasketsStore((state) => state.remove);
 
-  const [renaming, setRenaming] = useState(null); // basket being renamed, or null
+  const [renaming, setRenaming] = useState(null);
 
   const loadBasket = (basket) => {
     setActiveItems(basket.items);
@@ -159,5 +159,4 @@ function SavedBaskets() {
   );
 }
 
-// See lib/ignoreParentRenders.js: this screen takes no props and updates through its own hooks.
 export default ignoreParentRenders(SavedBaskets);

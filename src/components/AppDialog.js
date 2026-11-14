@@ -6,9 +6,6 @@ import { colors } from "../theme/colors";
 import { useUiStore } from "../store/uiStore";
 import { tapLight } from "../lib/haptics";
 
-// The app's own confirm / notice dialog, used instead of the system Alert (see store/uiStore.js: confirmDialog,
-// showNotice). Same look as the other cards: white rounded card on a dimmed screen, a soft icon tile, accent buttons.
-// "danger" (red) is for things that delete or end something; everything else is the accent colour.
 const DANGER = "#DC2626";
 const DANGER_SOFT = "#FDECEC";
 
@@ -37,7 +34,6 @@ export function AppDialog() {
         className="flex-1 items-center justify-center px-7"
         style={{ backgroundColor: "rgba(20,21,35,0.5)" }}
       >
-        {/* The inner Pressable swallows taps so touching the card does not dismiss the dialog. */}
         <Pressable onPress={() => {}} style={{ width: "100%", maxWidth: 380 }}>
           <Animated.View
             entering={ZoomIn.duration(170)}

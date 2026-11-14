@@ -1,11 +1,6 @@
-// Product slugs stored on the phone (the active basket, saved baskets) can go stale: when two products are merged on the
-// server the retired slug stops being the product's name. The server keeps resolving old slugs for good, so nothing breaks
-// when the phone is not updated; this tidies the phone's own copy using the server's answer (POST /api/slugs/resolve ->
-// { moved: { oldSlug: currentSlug } }). Pure functions, no React or storage, so they are easy to test.
-
 import { lineId } from "./itemSize";
 
-const MAX_QUANTITY = 999; // same cap as the server
+const MAX_QUANTITY = 999;
 
 const move = (slug, moved) => (typeof slug === "string" && moved[slug] ? moved[slug] : slug);
 
@@ -34,8 +29,6 @@ function rewriteKept(kept, moved) {
   return changed ? next : kept;
 }
 
-// Basket lines with their stored slugs brought up to date. Lines that became the same product in the same size are added
-// together (the first line's other details win); the same product in two sizes stays two lines. Returns the SAME array when nothing changed, so callers can skip a pointless write.
 export function rewriteItems(items, moved) {
   if (!Array.isArray(items) || !moved || Object.keys(moved).length === 0) return items;
   let changed = false;
@@ -64,7 +57,6 @@ export function rewriteItems(items, moved) {
   return changed ? [...lines.values()] : items;
 }
 
-// Every product slug a list of basket lines refers to (the line itself, accepted swaps, hidden suggestions).
 export function collectSlugs(items, into = new Set()) {
   for (const item of Array.isArray(items) ? items : []) {
     if (item.canonicalProductId) into.add(item.canonicalProductId);

@@ -15,10 +15,6 @@ import Animated, {
 import { APP_NAME } from "../lib/brand";
 import { tapLight } from "../lib/haptics";
 
-// The opening animation, played once each time the app starts, over the same navy as the app icon and the native
-// splash so it carries on from them: the two halves of the B fly in from opposite corners and lock together, a
-// glow and a flash mark the click, the name rises in letter by letter, then the whole thing fades into the app.
-// With "reduce motion" on it is a short fade instead.
 const NAVY = "#0A0A1F";
 const RATIO = 771 / 927;
 const MARK_HEIGHT = 150;
@@ -70,7 +66,6 @@ export function BrandIntro() {
     const fly = { damping: 13, stiffness: 120, mass: 0.9 };
     topIn.value = withSpring(1, fly);
     bottomIn.value = withDelay(140, withSpring(1, fly));
-    // The pieces meet at about 0.75 s: pulse the glow, flash the mark, pop it slightly, tick the phone.
     glow.value = withDelay(720, withSequence(withTiming(1, { duration: 240 }), withTiming(0, { duration: 1100 })));
     flash.value = withDelay(740, withSequence(withTiming(0.85, { duration: 120 }), withTiming(0, { duration: 420 })));
     pop.value = withDelay(720, withSequence(withTiming(1.07, { duration: 140 }), withSpring(1, { damping: 8, stiffness: 180 })));

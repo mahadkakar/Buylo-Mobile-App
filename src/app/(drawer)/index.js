@@ -32,8 +32,6 @@ import { relativeTime } from "../../lib/relativeTime";
 import { isOutOfCoverage } from "../../lib/location";
 import { ignoreParentRenders } from "../../lib/ignoreParentRenders";
 
-// How many of the most recently updated saved baskets feed the dashboard, and
-// how many product cards to show from them.
 const SOURCE_BASKETS = 5;
 const MAX_RECENT_PRODUCTS = 6;
 
@@ -58,19 +56,9 @@ function Dashboard() {
   const comparisonItemCount = useComparisonStore((state) => state.itemCount);
   const comparisonIsStale = useComparisonStore((state) => state.isStaleFor(items, location));
   const startComparison = useComparisonStore((state) => state.start);
-  // A "ready"/"running"/"error" job from a basket that's since changed
-  // (items added/removed, quantities edited) isn't current anymore —
-  // confirmed live: without this, "Your comparison is ready" kept showing
-  // for a basket that had never actually been checked. Treat a stale job
-  // as idle rather than show a banner for a check that no longer applies.
   const comparisonStatus = comparisonIsStale ? "idle" : comparisonStatusRaw;
   const hasBanner = comparisonStatus === "running" || comparisonStatus === "ready" || (comparisonStatus === "idle" && items.length > 0);
 
-  // One-time nudge for a fresh install: send a user with no location set
-  // straight to the picker instead of waiting for them to notice the
-  // inline banner below. Not a hard block — backing out of that screen
-  // still marks this done, so we only ever ask once (see
-  // preferencesStore's hasPromptedLocation comment).
   useEffect(() => {
     if (!location && !hasPromptedLocation) {
       setHasPromptedLocation(true);
@@ -81,11 +69,6 @@ function Dashboard() {
   const queryClient = useQueryClient();
   const fullName = session?.user?.user_metadata?.full_name || session?.user?.email?.split("@")[0];
   const firstName = fullName?.trim().split(/\s+/)[0];
-  // The only basket history the app keeps is Saved Baskets. Count how often
-  // each product shows up across the most recently updated ones (ties keep
-  // most-recent-basket-first order, since Array.sort is stable) and show the
-  // top few as live product cards. Basket contents are on-device; only the
-  // price/photo lookups for those few products hit the network.
   const savedBaskets = useSavedBasketsStore((state) => state.baskets);
   const recentProductIds = useMemo(() => {
     const recent = [...savedBaskets].sort((a, b) => b.updatedAt - a.updatedAt).slice(0, SOURCE_BASKETS);
@@ -109,9 +92,6 @@ function Dashboard() {
   const updateQuantity = useBasketStore((state) => state.updateQuantity);
   const inBasketIds = useMemo(() => new Set(items.map((i) => lineId(i))), [items]);
 
-  // One row per retailer, nearest store first (backend already sorts by
-  // distance when `location` is given — see useNearestStores) — mirrors
-  // how /api/comparison/ itself picks one store per retailer.
   const {
     data: nearestStoresRaw,
     isLoading: nearestStoresLoading,
@@ -127,16 +107,11 @@ function Dashboard() {
     });
   }, [nearestStoresRaw]);
 
-  // Real per-retailer availability for whatever's actually in the basket
-  // right now — same data /api/comparison/ computes for the explicit
-  // "Compare prices nearby" flow, just read here for display instead of
-  // stored as a job result. Only fetched when there's something to check.
   const {
     data: comparisonData,
     isError: comparisonError,
     isRefetching: comparisonRefetching,
   } = useComparisonQuery(items, location);
-  // nearestStores is sorted nearest-first, so [0] is the closest priced store.
   const outOfCoverage = nearestStores.length > 0 && isOutOfCoverage(nearestStores[0].distanceKm);
   const comparisonByRetailer = useMemo(() => {
     const map = new Map();
@@ -409,11 +384,6 @@ function Dashboard() {
               {nearestStores
                 .map((store) => {
                   const comparison = comparisonByRetailer.get(store.retailerSlug);
-                  // Only a real comparisonData success counts as "we know
-                  // availability" — on error or while still loading,
-                  // comparisonByRetailer is empty too, and defaulting
-                  // unavailableCount to 0 in that case would wrongly claim
-                  // "fully available" instead of "unknown."
                   const available =
                     items.length > 0 && comparisonData
                       ? Math.max(items.length - (comparison?.unavailableCount ?? 0), 0)
@@ -484,5 +454,4 @@ function Dashboard() {
   );
 }
 
-// See lib/ignoreParentRenders.js: this screen takes no props and updates through its own hooks.
 export default ignoreParentRenders(Dashboard);
