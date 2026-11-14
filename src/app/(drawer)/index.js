@@ -15,7 +15,7 @@ import {
 import { colors } from "../../theme/colors";
 import { AppHeader } from "../../components/AppHeader";
 import { BottomNav } from "../../components/BottomNav";
-import { plainName } from "../../lib/text";
+import { neighbourhoodName, plainName } from "../../lib/text";
 import { HeroBanner } from "../../components/HeroBanner";
 import { RecentItemCard } from "../../components/RecentItemCard";
 import { CATEGORIES } from "../../constants/categories";
@@ -107,17 +107,8 @@ function Dashboard() {
     });
   }, [nearestStoresRaw]);
 
-  const {
-    data: comparisonData,
-    isError: comparisonError,
-    isRefetching: comparisonRefetching,
-  } = useComparisonQuery(items, location);
+  const { isRefetching: comparisonRefetching } = useComparisonQuery(items, location);
   const outOfCoverage = nearestStores.length > 0 && isOutOfCoverage(nearestStores[0].distanceKm);
-  const comparisonByRetailer = useMemo(() => {
-    const map = new Map();
-    for (const r of comparisonData ?? []) map.set(r.id, r);
-    return map;
-  }, [comparisonData]);
 
   const refreshing = recentProductsRefetching || nearestStoresRefetching || comparisonRefetching;
   const handleRefresh = () => {
@@ -328,7 +319,7 @@ function Dashboard() {
             <View style={{ marginBottom: 14 }}>
               <Text className="font-sans-bold text-base text-ink">Participating stores nearby</Text>
               <Text className="font-sans-medium text-[12.5px] text-muted mt-0.5">
-                {location ? `Closest stores with prices near ${location.label}` : "Set your location to see nearby stores"}
+                {location ? `Closest stores with prices near ${neighbourhoodName(location.label)}` : "Set your location to see nearby stores"}
               </Text>
             </View>
 
@@ -365,11 +356,6 @@ function Dashboard() {
               </Pressable>
             ) : (
             <View className="gap-3">
-              {comparisonError && items.length > 0 && (
-                <Text className="font-sans-medium text-[11px] mt-[-6px] mb-1" style={{ color: "#B45309" }}>
-                  Couldn't check items right now.
-                </Text>
-              )}
               {outOfCoverage && (
                 <View className="rounded-2xl px-4 py-3.5" style={{ backgroundColor: "#FEF3E2" }}>
                   <Text className="font-sans-bold text-[13px]" style={{ color: "#B45309" }}>
@@ -383,23 +369,16 @@ function Dashboard() {
               )}
               {nearestStores
                 .map((store) => {
-                  const comparison = comparisonByRetailer.get(store.retailerSlug);
-                  const available =
-                    items.length > 0 && comparisonData
-                      ? Math.max(items.length - (comparison?.unavailableCount ?? 0), 0)
-                      : null;
-                  const full = available === items.length;
-                  const tone = full ? { bg: colors.savingsSoft, text: colors.savings } : { bg: "#FEF3E2", text: "#B45309" };
                   return (
                     <View key={store.retailerSlug} className="bg-white border border-border rounded-2xl p-4">
                       <View className="flex-row items-start gap-3">
                         <View
                           className="w-11 h-11 rounded-xl items-center justify-center"
-                          style={{ backgroundColor: available === null ? "#EFEFF5" : tone.bg }}
+                          style={{ backgroundColor: "#EFEFF5" }}
                         >
                           <Text
                             className="font-sans-extrabold text-[13px]"
-                            style={{ color: available === null ? "#55566b" : tone.text }}
+                            style={{ color: "#55566b" }}
                           >
                             {store.retailer.slice(0, 2).toUpperCase()}
                           </Text>
@@ -431,17 +410,12 @@ function Dashboard() {
                           </View>
                         </View>
                       </View>
-                      {available !== null && (
-                        <Text className="font-sans-bold text-[12px] mt-2.5" style={{ color: tone.text }}>
-                          {available}/{items.length} items found
-                        </Text>
-                      )}
                     </View>
                   );
                 })}
               {nearestStores.length === 0 && (
                 <Text className="font-sans-medium text-sm text-muted text-center py-4">
-                  No participating stores found near {location.label}
+                  No participating stores found near {neighbourhoodName(location.label)}
                 </Text>
               )}
             </View>

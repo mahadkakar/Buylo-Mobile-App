@@ -19,6 +19,7 @@ import { colors } from "../theme/colors";
 import { usePreferencesStore } from "../store/preferencesStore";
 import { searchFsa, nearestFsaLabel } from "../lib/postalCode";
 import { roundCoord } from "../lib/location";
+import { neighbourhoodName } from "../lib/text";
 
 const FSA_LABEL_MAX_KM = 40;
 const LOCATION_TIMEOUT_MS = 15000;
@@ -127,7 +128,7 @@ export default function ManualLocation() {
           <View className="flex-row items-center gap-2 bg-accent-soft rounded-2xl px-4 py-3 mb-4">
             <MapPin color={colors.accent} size={16} />
             <Text className="font-sans-semibold text-sm text-accent flex-1" numberOfLines={1}>
-              Currently: {location.label}
+              Currently: {neighbourhoodName(location.label)}
             </Text>
           </View>
         )}

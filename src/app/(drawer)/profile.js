@@ -31,6 +31,7 @@ import { confirmDialog, showNotice, showToast } from "../../store/uiStore";
 import { useAuthStore } from "../../store/authStore";
 import { usePreferencesStore } from "../../store/preferencesStore";
 import { APP_NAME } from "../../lib/brand";
+import { neighbourhoodName } from "../../lib/text";
 import { ignoreParentRenders } from "../../lib/ignoreParentRenders";
 
 function memberSince(createdAt) {
@@ -287,7 +288,7 @@ function Profile() {
             </View>
             <View className="flex-1">
               <Text className="font-sans-semibold text-[14px] text-ink" numberOfLines={1}>
-                {location?.label || "No location set"}
+                {location?.label ? neighbourhoodName(location.label) : "No location set"}
               </Text>
               <Text className="font-sans-medium text-[11px] text-muted mt-0.5">
                 Used to find nearby participating stores
