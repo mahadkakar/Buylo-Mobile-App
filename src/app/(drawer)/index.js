@@ -50,8 +50,6 @@ function Dashboard() {
   const items = useBasketStore((state) => state.items);
 
   const location = usePreferencesStore((state) => state.location);
-  const hasPromptedLocation = usePreferencesStore((state) => state.hasPromptedLocation);
-  const setHasPromptedLocation = usePreferencesStore((state) => state.setHasPromptedLocation);
   const comparisonStatusRaw = useComparisonStore((state) => state.status);
   const comparisonItemCount = useComparisonStore((state) => state.itemCount);
   const comparisonIsStale = useComparisonStore((state) => state.isStaleFor(items, location));
@@ -60,10 +58,24 @@ function Dashboard() {
   const hasBanner = comparisonStatus === "running" || comparisonStatus === "ready" || (comparisonStatus === "idle" && items.length > 0);
 
   useEffect(() => {
-    if (!location && !hasPromptedLocation) {
-      setHasPromptedLocation(true);
-      router.push("/manual-location");
+    const store = usePreferencesStore;
+    const run = () => {
+      const state = store.getState();
+      if (!state.hasSeenOnboarding && !state.location) {
+        router.push("/onboarding");
+        return;
+      }
+      if (!state.hasSeenOnboarding) state.setHasSeenOnboarding(true);
+      if (!state.location && !state.hasPromptedLocation) {
+        state.setHasPromptedLocation(true);
+        router.push("/manual-location");
+      }
+    };
+    if (store.persist.hasHydrated()) {
+      run();
+      return undefined;
     }
+    return store.persist.onFinishHydration(run);
   }, []);
 
   const queryClient = useQueryClient();

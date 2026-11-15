@@ -10,12 +10,14 @@ export const usePreferencesStore = create(
       suggestBrands: true,
       location: null,
       hasPromptedLocation: false,
+      hasSeenOnboarding: false,
 
       setUnits: (units) => set({ units }),
       setRadiusKm: (radiusKm) => set({ radiusKm }),
       setSuggestBrands: (suggestBrands) => set({ suggestBrands }),
       setLocation: (location) => set({ location }),
       setHasPromptedLocation: (hasPromptedLocation) => set({ hasPromptedLocation }),
+      setHasSeenOnboarding: (hasSeenOnboarding) => set({ hasSeenOnboarding }),
     }),
     {
       name: "basket-compare-preferences",
