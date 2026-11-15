@@ -96,15 +96,18 @@ function Categories() {
   const { width: windowWidth } = useWindowDimensions();
   const cardWidth = (windowWidth - SCREEN_PADDING * 2 - GRID_GAP) / 2;
   const { category: paramCategory } = useLocalSearchParams();
-  const [selected, setSelected] = useState(paramCategory || CATEGORIES[0].slug);
+  const selected = paramCategory || CATEGORIES[0].slug;
+  const listRef = useRef(null);
+  const userScrolled = useRef(false);
   const [sort, setSort] = useState(SORTS[0]);
   const [store, setStore] = useState(STORE_FILTERS[0]);
   const [openMenu, setOpenMenu] = useState(null);
-  const gridReady = useDeferredReady(paramCategory || selected);
+  const gridReady = useDeferredReady(selected);
 
   useEffect(() => {
-    if (paramCategory) setSelected(paramCategory);
-  }, [paramCategory]);
+    userScrolled.current = false;
+    listRef.current?.scrollToOffset({ offset: 0, animated: false });
+  }, [selected]);
 
   const items = useBasketStore((state) => state.items);
   const addItem = useBasketStore((state) => state.addItem);
@@ -144,11 +147,11 @@ function Categories() {
       <AppHeader />
 
       <FlatList
-        key={selected}
+        ref={listRef}
         data={gridReady ? products : []}
         keyExtractor={(item) => item.id}
-        initialNumToRender={5}
-        maxToRenderPerBatch={5}
+        initialNumToRender={3}
+        maxToRenderPerBatch={2}
         updateCellsBatchingPeriod={50}
         windowSize={5}
         numColumns={2}
@@ -156,7 +159,10 @@ function Categories() {
         contentContainerStyle={{ paddingHorizontal: SCREEN_PADDING, paddingBottom: 100, gap: 18 }}
         onEndReachedThreshold={0.4}
         onEndReached={() => {
-          if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+          if (userScrolled.current && hasNextPage && !isFetchingNextPage) fetchNextPage();
+        }}
+        onScrollBeginDrag={() => {
+          userScrolled.current = true;
         }}
         refreshControl={
           <RefreshControl refreshing={isRefetching && !isFetchingNextPage} onRefresh={handleRefresh} tintColor={colors.accent} />
