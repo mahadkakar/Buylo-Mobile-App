@@ -115,7 +115,6 @@ export default function RootLayout() {
           >
             <Stack.Protected guard={!!session}>
               <Stack.Screen name="(drawer)" />
-              <Stack.Screen name="search" options={{ animation: "fade", animationDuration: 150 }} />
               <Stack.Screen name="manual-location" />
               <Stack.Screen name="comparison-results" />
               <Stack.Screen name="swaps" />

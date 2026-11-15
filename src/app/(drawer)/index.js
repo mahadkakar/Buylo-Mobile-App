@@ -199,7 +199,7 @@ function Dashboard() {
             )}
 
             <Pressable
-              onPress={() => router.push("/search")}
+              onPress={() => router.navigate("/(drawer)/search")}
               className="flex-row items-center bg-white border border-border rounded-2xl px-4 h-12 gap-2"
               style={{ marginTop: hasBanner ? 20 : 28 }}
             >
@@ -222,7 +222,7 @@ function Dashboard() {
                 title="Find the cheapest store"
                 subtitle="Compare Metro, Food Basics and Walmart on your whole basket."
                 cta="Start a basket"
-                onPress={() => router.push("/search")}
+                onPress={() => router.navigate("/(drawer)/search")}
               />
             )}
 

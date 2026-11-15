@@ -4,17 +4,17 @@ import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Search as SearchIcon, X } from "lucide-react-native";
 
-import { colors } from "../theme/colors";
-import { AppHeader } from "../components/AppHeader";
-import { ProductCard } from "../components/ProductCard";
-import { BottomNav } from "../components/BottomNav";
-import { ProductGridSkeleton } from "../components/motion";
-import { useProductSearch } from "../api/products";
-import { useBasketStore } from "../store/basketStore";
-import { cardLineId, lineId } from "../lib/itemSize";
-import { useDeferredReady } from "../lib/useDeferredReady";
-import { useDebouncedValue } from "../lib/useDebouncedValue";
-import { ignoreParentRenders } from "../lib/ignoreParentRenders";
+import { colors } from "../../theme/colors";
+import { AppHeader } from "../../components/AppHeader";
+import { ProductCard } from "../../components/ProductCard";
+import { BottomNav } from "../../components/BottomNav";
+import { ProductGridSkeleton } from "../../components/motion";
+import { useProductSearch } from "../../api/products";
+import { useBasketStore } from "../../store/basketStore";
+import { cardLineId, lineId } from "../../lib/itemSize";
+import { useDeferredReady } from "../../lib/useDeferredReady";
+import { useDebouncedValue } from "../../lib/useDebouncedValue";
+import { ignoreParentRenders } from "../../lib/ignoreParentRenders";
 
 const SCREEN_PADDING = 20;
 const GRID_GAP = 14;
