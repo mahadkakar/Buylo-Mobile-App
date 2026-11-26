@@ -44,7 +44,7 @@ export default function ComparisonResults() {
       .catch(() => setError());
   }, [status]);
 
-  const { data: rawSuggestionData, isPlaceholderData } = useSuggestions(items, location, status === "ready" && suggestBrands);
+  const { data: rawSuggestionData, isPlaceholderData } = useSuggestions(items, location, status === "ready");
   const suggestionData = isPlaceholderData ? undefined : rawSuggestionData;
 
   if (status === "idle") {
@@ -96,7 +96,6 @@ export default function ComparisonResults() {
   const swapStore = (best.swapSavings ?? 0) > 0 ? best : [...results].sort((a, b) => (b.swapSavings ?? 0) - (a.swapSavings ?? 0))[0];
   const swapSaved = swapStore?.swapSavings ?? 0;
   const suggestionStores = suggestionData?.retailers ?? [];
-  const replacementCounts = Object.fromEntries(suggestionStores.map((r) => [r.id, (r.replacements ?? []).length]));
   const waysToSave = {
     best: Math.max(0, ...suggestionStores.map((r) => r.potentialSaving)),
     count: new Set(suggestionStores.flatMap((r) => r.suggestions.map((s) => `${s.slug}:${s.alternative.slug}`))).size,
@@ -190,14 +189,17 @@ export default function ComparisonResults() {
         )}
 
         {results.map((store, index) => {
-          const allUnavailable = store.unavailableCount >= items.length;
-          const isBest = store.id === best.id && !allUnavailable;
-          const isCheapest = isBest && isExact(store);
+          const noneFound = store.availableCount === 0;
           const storeInfo = { id: store.id, name: store.name };
           const storeSuggestions = suggestionStores.find((r) => r.id === store.id);
-          const pendingSwaps = storeSuggestions?.suggestions ?? [];
+          const pendingSwaps = suggestBrands ? storeSuggestions?.suggestions ?? [] : [];
           const pendingSaving = pendingSwaps.reduce((sum, s) => sum + s.saving, 0);
-          const pendingReplacements = store.unavailableCount > 0 ? storeSuggestions?.replacements ?? [] : [];
+          const missingSlugs = new Set((store.lines ?? []).filter((line) => !line.available).map((line) => line.slug));
+          const pendingReplacements =
+            store.unavailableCount > 0 ? (storeSuggestions?.replacements ?? []).filter((r) => missingSlugs.has(r.slug)) : [];
+          const allUnavailable = noneFound && pendingReplacements.length === 0;
+          const isBest = store.id === best.id && !noneFound;
+          const isCheapest = isBest && isExact(store);
           const swapSavings = store.swapSavings ?? 0;
           return (
             <Reveal key={store.id} index={index} step={90}>
@@ -223,9 +225,9 @@ export default function ComparisonResults() {
                 {store.distanceKm != null && (
                   <Text className="font-sans-medium text-[10.5px] text-muted mt-0.5">{store.distanceKm} km away</Text>
                 )}
-                {store.unavailableCount > 0 && (replacementCounts[store.id] ?? 0) > 0 && (
+                {pendingReplacements.length > 0 && (
                   <Text className="font-sans-semibold mt-1" style={{ fontSize: 11, color: colors.accent }}>
-                    {replacementCounts[store.id]} replacement{replacementCounts[store.id] === 1 ? "" : "s"} available
+                    {pendingReplacements.length} replacement{pendingReplacements.length === 1 ? "" : "s"} available
                   </Text>
                 )}
                 {store.swapCount > 0 && (
@@ -247,7 +249,7 @@ export default function ComparisonResults() {
                     </Text>
                   </View>
                 )}
-                {allUnavailable ? (
+                {noneFound ? (
                   <Text className="font-sans-medium text-[10.5px] mt-1" style={{ color: "#B45309" }}>
                     None of your items were found at {store.name}
                   </Text>
@@ -258,7 +260,7 @@ export default function ComparisonResults() {
                     </Text>
                   )
                 )}
-                {!allUnavailable && store.substitutionCount > 0 && (
+                {!noneFound && store.substitutionCount > 0 && (
                   <Text className="font-sans-medium text-[10.5px] mt-1" style={{ color: "#B45309" }}>
                     {store.substitutionCount} item{store.substitutionCount === 1 ? "" : "s"} in a different size than you
                     picked
