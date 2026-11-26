@@ -111,10 +111,10 @@ function Categories() {
 
   const items = useBasketStore((state) => state.items);
   const addItem = useBasketStore((state) => state.addItem);
-  const inBasketIds = useMemo(() => new Set(items.map((i) => lineId(i))), [items]);
+  const basketQuantities = useMemo(() => new Map(items.map((i) => [lineId(i), i.quantityValue])), [items]);
   const handleAdd = useCallback((item) => addItem({ canonicalProductId: item.id, name: item.name, brand: item.brand, displaySize: item.sizeLabel, image: item.image, category: item.category, price: item.price, retailer: item.retailer, quantityValue: 1, quantityUnit: "unit" }), [addItem]);
-  const removeItem = useBasketStore((state) => state.removeItem);
-  const handleRemove = useCallback((item) => removeItem(cardLineId(item)), [removeItem]);
+  const updateQuantity = useBasketStore((state) => state.updateQuantity);
+  const handleChangeQuantity = useCallback((item, quantityValue) => updateQuantity(cardLineId(item), quantityValue), [updateQuantity]);
   const handlePress = useCallback((item) => router.push(`/product/${item.id}`), [router]);
 
   const category = CATEGORIES.find((c) => c.slug === selected);
@@ -239,9 +239,9 @@ function Categories() {
           <ProductCard
             index={index}
             product={item}
-            inBasket={inBasketIds.has(cardLineId(item))}
+            quantity={basketQuantities.get(cardLineId(item)) ?? 0}
             onAdd={handleAdd}
-            onRemove={handleRemove}
+            onChangeQuantity={handleChangeQuantity}
             onPress={handlePress}
             width={cardWidth}
           />
