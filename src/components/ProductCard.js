@@ -1,16 +1,17 @@
 import { memo } from "react";
 import { View, Text } from "react-native";
-import { CheckGlyph, MinusGlyph, PlusGlyph } from "./Glyphs";
+import { PlusGlyph } from "./Glyphs";
 
-import { colors } from "../theme/colors";
 import { cardShadow, photoBlendStyle, photoTileStyle } from "../theme/shadows";
 import { ProductImage } from "./ProductImage";
 import { tapLight } from "../lib/haptics";
 import { PopOnChange, PressableScale, Reveal } from "./motion";
+import { Stepper } from "./Stepper";
 
 const TINTS = ["#F8DADA", "#D6EDDC", "#D9E1FA", "#FBE5C2"];
 
-function ProductCardView({ product, inBasket, onAdd, onRemove, onPress, width, index = 0 }) {
+function ProductCardView({ product, quantity = 0, onAdd, onChangeQuantity, onPress, width, index = 0 }) {
+  const inBasket = quantity > 0;
   const price = typeof product.price === "number" ? `$${product.price.toFixed(2)}` : null;
   return (
     <Reveal index={index} style={{ width }}>
@@ -56,43 +57,41 @@ function ProductCardView({ product, inBasket, onAdd, onRemove, onPress, width, i
           </View>
 
           <View className="flex-row items-center justify-between px-1.5 pt-2.5 pb-0.5">
-            <Text className="font-sans-extrabold text-ink" style={{ fontSize: 17 }}>{price ?? ""}</Text>
-            <View className="flex-row items-center" style={{ gap: 6 }}>
-              {inBasket && onRemove ? (
+            <Text
+              className="font-sans-extrabold text-ink"
+              style={{ fontSize: 17, flexShrink: 1, marginRight: 6 }}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.75}
+            >
+              {price ?? ""}
+            </Text>
+            <PopOnChange trigger={inBasket} skipFirst>
+              {inBasket ? (
+                <Stepper
+                  compact
+                  quantity={quantity}
+                  label={product.name}
+                  onIncrement={() => onChangeQuantity(product, quantity + 1)}
+                  onDecrement={() => onChangeQuantity(product, quantity - 1)}
+                />
+              ) : (
                 <PressableScale
                   lite
                   onPress={() => {
-                    tapLight();
-                    onRemove(product);
-                  }}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Remove ${product.name} from basket`}
-                  hitSlop={6}
-                  scaleTo={0.88}
-                  className="w-9 h-9 rounded-full items-center justify-center"
-                  style={{ backgroundColor: "#FEE2E2" }}
-                >
-                  <MinusGlyph color="#DC2626" />
-                </PressableScale>
-              ) : null}
-              <PopOnChange trigger={inBasket} skipFirst>
-                <PressableScale
-                  lite
-                  onPress={() => {
-                    if (inBasket) return;
                     tapLight();
                     onAdd(product);
                   }}
                   accessibilityRole="button"
-                  accessibilityLabel={inBasket ? `${product.name} is in your basket` : `Add ${product.name} to basket`}
+                  accessibilityLabel={`Add ${product.name} to basket`}
                   hitSlop={10}
                   scaleTo={0.88}
-                  className={`w-9 h-9 rounded-full items-center justify-center ${inBasket ? "bg-savings" : "bg-accent"}`}
+                  className="w-9 h-9 rounded-full items-center justify-center bg-accent"
                 >
-                  {inBasket ? <CheckGlyph /> : <PlusGlyph />}
+                  <PlusGlyph />
                 </PressableScale>
-              </PopOnChange>
-            </View>
+              )}
+            </PopOnChange>
           </View>
         </View>
       </PressableScale>
