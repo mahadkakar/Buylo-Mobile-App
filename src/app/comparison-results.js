@@ -267,26 +267,22 @@ export default function ComparisonResults() {
                   </Text>
                 )}
               </View>
-              {noneFound && !allUnavailable ? (
-                <ChevronRight color={colors.muted} size={20} />
-              ) : (
-                <View className="items-end">
-                  {swapSavings > 0 && (
-                    <Text
-                      className="font-mono"
-                      style={{ fontSize: 12.5, color: colors.muted, textDecorationLine: "line-through", fontVariant: ["tabular-nums"] }}
-                    >
-                      ${(store.total + swapSavings).toFixed(2)}
-                    </Text>
-                  )}
+              <View className="items-end">
+                {swapSavings > 0 && (
                   <Text
-                    className="font-mono text-[17px]"
-                    style={{ color: isBest ? colors.accent : colors.ink, fontVariant: ["tabular-nums"] }}
+                    className="font-mono"
+                    style={{ fontSize: 12.5, color: colors.muted, textDecorationLine: "line-through", fontVariant: ["tabular-nums"] }}
                   >
-                    ${store.total.toFixed(2)}
+                    ${(store.total + swapSavings).toFixed(2)}
                   </Text>
-                </View>
-              )}
+                )}
+                <Text
+                  className="font-mono text-[17px]"
+                  style={{ color: isBest ? colors.accent : colors.ink, fontVariant: ["tabular-nums"] }}
+                >
+                  ${store.total.toFixed(2)}
+                </Text>
+              </View>
             </PressableScale>
 
             {swapSavings > 0 && (
