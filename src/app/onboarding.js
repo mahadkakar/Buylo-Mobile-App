@@ -22,25 +22,25 @@ const STEPS = [
     key: "welcome",
     Art: WelcomeArt,
     title: `Welcome to ${APP_NAME}`,
-    body: "Compare grocery prices at Metro, Food Basics and Walmart in one place.",
+    body: "Compare grocery prices across stores and find where your basket costs the least.",
   },
   {
     key: "basket",
     Art: BasketArt,
     title: "Build your basket",
-    body: "Search or browse the aisles, then tap the plus to add what you buy.",
+    body: "Find what you buy by searching or browsing the aisles, then tap the plus on each product.",
   },
   {
     key: "compare",
     Art: CompareArt,
     title: "Find the cheapest store",
-    body: "Compare your whole basket and see which store costs the least.",
+    body: "When your basket is ready, tap Compare prices to see which store costs the least for all of it.",
   },
   {
     key: "swaps",
     Art: SwapArt,
     title: "Save with cheaper brands",
-    body: "We suggest the same product from a cheaper brand. Keep yours or swap in one tap.",
+    body: "On the results screen we suggest cheaper brands of the same product. Swap in one tap, or keep yours.",
   },
   {
     key: "location",
@@ -60,11 +60,23 @@ function Step({ step, index, width, scrollX }) {
       transform: [{ translateX: interpolate(scrollX.value, input, [width * 0.25, 0, -width * 0.25], Extrapolation.CLAMP) }],
     };
   });
+  const [space, setSpace] = useState(0);
+  const [natural, setNatural] = useState(0);
+  const scale = space > 0 && natural > space ? space / natural : 1;
   const { Art } = step;
   return (
     <View style={{ width }} className="flex-1 px-7">
-      <Animated.View className="flex-1 items-center justify-center" style={animated}>
-        <Art />
+      <Animated.View
+        className="flex-1 items-center justify-center"
+        style={animated}
+        onLayout={(event) => setSpace(event.nativeEvent.layout.height - 12)}
+      >
+        <View
+          onLayout={(event) => setNatural(event.nativeEvent.layout.height)}
+          style={{ position: "absolute", transform: [{ scale }] }}
+        >
+          <Art />
+        </View>
       </Animated.View>
       <View className="items-center" style={{ height: 132 }}>
         <Text className="font-sans-extrabold text-ink text-center" style={{ fontSize: 26, lineHeight: 32 }}>
