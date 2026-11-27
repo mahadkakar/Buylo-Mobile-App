@@ -5,7 +5,7 @@ import { PlusGlyph } from "./Glyphs";
 import { cardShadow, photoBlendStyle, photoTileStyle } from "../theme/shadows";
 import { ProductImage } from "./ProductImage";
 import { tapLight } from "../lib/haptics";
-import { PopOnChange, PressableScale, Reveal } from "./motion";
+import { PressableScale, Reveal } from "./motion";
 import { Stepper } from "./Stepper";
 
 const TINTS = ["#F8DADA", "#D6EDDC", "#D9E1FA", "#FBE5C2"];
@@ -66,32 +66,30 @@ function ProductCardView({ product, quantity = 0, onAdd, onChangeQuantity, onPre
             >
               {price ?? ""}
             </Text>
-            <PopOnChange trigger={inBasket} skipFirst>
-              {inBasket ? (
-                <Stepper
-                  compact
-                  quantity={quantity}
-                  label={product.name}
-                  onIncrement={() => onChangeQuantity(product, quantity + 1)}
-                  onDecrement={() => onChangeQuantity(product, quantity - 1)}
-                />
-              ) : (
-                <PressableScale
-                  lite
-                  onPress={() => {
-                    tapLight();
-                    onAdd(product);
-                  }}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Add ${product.name} to basket`}
-                  hitSlop={10}
-                  scaleTo={0.88}
-                  className="w-9 h-9 rounded-full items-center justify-center bg-accent"
-                >
-                  <PlusGlyph />
-                </PressableScale>
-              )}
-            </PopOnChange>
+            {inBasket ? (
+              <Stepper
+                compact
+                quantity={quantity}
+                label={product.name}
+                onIncrement={() => onChangeQuantity(product, quantity + 1)}
+                onDecrement={() => onChangeQuantity(product, quantity - 1)}
+              />
+            ) : (
+              <PressableScale
+                lite
+                onPress={() => {
+                  tapLight();
+                  onAdd(product);
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={`Add ${product.name} to basket`}
+                hitSlop={10}
+                scaleTo={0.88}
+                className="w-9 h-9 rounded-full items-center justify-center bg-accent"
+              >
+                <PlusGlyph />
+              </PressableScale>
+            )}
           </View>
         </View>
       </PressableScale>
