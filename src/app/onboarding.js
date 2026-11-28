@@ -15,7 +15,7 @@ import { colors } from "../theme/colors";
 import { usePreferencesStore } from "../store/preferencesStore";
 import { tapLight } from "../lib/haptics";
 import { APP_NAME } from "../lib/brand";
-import { BasketArt, CompareArt, LocationArt, SwapArt, WelcomeArt } from "../components/OnboardingArt";
+import { BasketArt, CompareArt, LocationArt, SizeArt, SwapArt, WelcomeArt } from "../components/OnboardingArt";
 
 const STEPS = [
   {
@@ -29,6 +29,12 @@ const STEPS = [
     Art: BasketArt,
     title: "Build your basket",
     body: "Find what you buy by searching or browsing the aisles, then tap the plus on each product.",
+  },
+  {
+    key: "sizes",
+    Art: SizeArt,
+    title: "Choose the size",
+    body: "Tap a product to see all its sizes with the price per 100 g, so you can spot the best value.",
   },
   {
     key: "compare",
