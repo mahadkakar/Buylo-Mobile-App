@@ -10,7 +10,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
-import { Carrot, LocateFixed, MapPin, Search, ShoppingBasket, Wheat } from "lucide-react-native";
+import { Carrot, Check, LocateFixed, MapPin, Plus, Search, ShoppingBasket, Wheat } from "lucide-react-native";
 
 import { colors } from "../theme/colors";
 import { cardShadow } from "../theme/shadows";
@@ -208,6 +208,69 @@ export function CompareArt() {
           </View>
         ))}
       </View>
+    </View>
+  );
+}
+
+const SIZE_ROWS = [
+  { size: "2 kg", price: "$6.49", unit: "$0.32 / 100 g", best: true, selected: true },
+  { size: "907 g", price: "$3.97", unit: "$0.44 / 100 g" },
+];
+
+export function SizeArt() {
+  return (
+    <View className="items-center" style={{ width: 264 }}>
+      <View className="w-full">
+        <ExampleTag />
+        <View className="flex-row items-center bg-white rounded-3xl p-3" style={[cardShadow, { gap: 12 }]}>
+          <View className="items-center justify-center rounded-2xl" style={{ width: 52, height: 52, backgroundColor: "#FBE5C2" }}>
+            <Wheat color="#B45309" size={24} />
+          </View>
+          <View className="flex-1">
+            <Text className="font-sans-bold text-ink" style={{ fontSize: 14.5 }}>Basmati Rice</Text>
+            <Text className="font-sans-semibold text-muted" style={{ fontSize: 11.5 }}>2 sizes</Text>
+          </View>
+        </View>
+      </View>
+
+      <View className="w-full mt-3">
+        <Callout number={1} text="Pick the size you want" pointing="down" side="right" inset={34} />
+      </View>
+      <View className="w-full" style={{ gap: 8 }}>
+        {SIZE_ROWS.map((row) => (
+          <View key={row.size} style={{ gap: 5 }}>
+            <View className="flex-row items-center px-0.5" style={{ gap: 6 }}>
+              <Text className="font-sans-extrabold text-ink" style={{ fontSize: 13 }}>{row.size}</Text>
+              {row.best && (
+                <View className="bg-savings rounded-full px-2 py-0.5">
+                  <Text className="font-sans-bold text-white" style={{ fontSize: 9, letterSpacing: 0.3 }}>BEST VALUE</Text>
+                </View>
+              )}
+            </View>
+            <View
+              className="flex-row items-center justify-between bg-white rounded-2xl px-3.5 py-2.5"
+              style={{ borderWidth: 1.5, borderColor: row.selected ? colors.accent : colors.border }}
+            >
+              <Text className="font-sans-semibold text-muted" style={{ fontSize: 11.5 }}>{row.unit}</Text>
+              <View className="flex-row items-center" style={{ gap: 6 }}>
+                <Text className="font-sans-extrabold" style={{ fontSize: 15, color: row.selected ? colors.accent : colors.ink }}>
+                  {row.price}
+                </Text>
+                {row.selected && <Check color={colors.accent} size={15} />}
+              </View>
+            </View>
+          </View>
+        ))}
+      </View>
+
+      <View
+        className="flex-row items-center justify-center bg-accent rounded-2xl w-full mt-3.5"
+        style={{ height: 44, gap: 6 }}
+      >
+        <Plus color="#fff" size={16} />
+        <Text className="font-sans-bold text-white" style={{ fontSize: 13.5 }}>Add this size to basket</Text>
+      </View>
+      <Callout number={2} text="Then add that size" pointing="up" side="right" inset={40} />
     </View>
   );
 }
